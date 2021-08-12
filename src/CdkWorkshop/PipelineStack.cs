@@ -58,7 +58,7 @@ namespace CdkWorkshop
             {
                 ActionName = "TestViewerEndpoint",
                 UseOutputs = new Dictionary<string, StackOutput> {
-                    { "ENDPOINT_URL", /* TBD */ }
+                    { "ENDPOINT_URL", pipeline.StackOutput(deploy.HCViewerUrl) }
                 },
                 Commands = new string[] {"curl -Ssf $ENDPOINT_URL"}
             }));
@@ -66,7 +66,7 @@ namespace CdkWorkshop
             {
                 ActionName = "TestAPIGatewayEndpoint",
                 UseOutputs = new Dictionary<string, StackOutput> {
-                    { "ENDPOINT_URL", /* TBD */ }
+                    { "ENDPOINT_URL", pipeline.StackOutput(deploy.HCEndpoint) }
                 },
                 Commands = new string[] {
                     "curl -Ssf $ENDPOINT_URL/",
