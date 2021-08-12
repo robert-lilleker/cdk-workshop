@@ -7,7 +7,7 @@ namespace CdkWorkshop
         public static void Main(string[] args)
         {
             var app = new App();
-            new CdkWorkshopStack(app, "CdkWorkshopStack");
+            new WorkshopPipelineStack(app, "WorkshopPipelineStack");
 
             app.Synth();
         }

@@ -1,7 +1,7 @@
 using Amazon.CDK;
-using Amazon.CDK.AWS.SNS;
-using Amazon.CDK.AWS.SNS.Subscriptions;
-using Amazon.CDK.AWS.SQS;
+using Amazon.CDK.AWS.Lambda;
+using Amazon.CDK.AWS.APIGateway;
+using Eladb.DynamoTableViewer;
 
 namespace CdkWorkshop
 {
@@ -9,15 +9,30 @@ namespace CdkWorkshop
     {
         internal CdkWorkshopStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
-             // The CDK includes built-in constructs for most resource types, such as Queues and Topics.
-            var queue = new Queue(this, "CdkWorkshopQueue", new QueueProps
+            var hello = new Function(this, "HelloHandler", new FunctionProps
             {
-                VisibilityTimeout = Duration.Seconds(300)
+                Runtime = Runtime.NODEJS_14_X, // execution environment
+                Code = Code.FromAsset("lambda"), // Code loaded from the "lambda" directory
+                Handler = "hello.handler" // file is "hello", function is "handler"
             });
 
-            var topic = new Topic(this, "CdkWorkshopTopic");
+            var helloWithCounter = new HitCounter(this, "HelloHitCounter", new HitCounterProps
+            {
+                Downstream = hello
+            });
 
-            topic.AddSubscription(new SqsSubscription(queue));
+            // defines an API Gateway REST API resource backed by our "hello" function.
+            new LambdaRestApi(this, "Endpoint", new LambdaRestApiProps
+            {
+                Handler = helloWithCounter.Handler
+            });
+
+            // Defines a new TableViewer resource
+            new TableViewer(this, "ViewerHitCount", new TableViewerProps
+            {
+                Title = "Hello Hits",
+                Table = helloWithCounter.MyTable
+            });
         }
     }
 }
