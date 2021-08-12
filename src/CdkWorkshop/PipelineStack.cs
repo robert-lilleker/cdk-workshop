@@ -3,6 +3,8 @@ using Amazon.CDK.AWS.CodeCommit;
 using Amazon.CDK.AWS.CodePipeline;
 using Amazon.CDK.AWS.CodePipeline.Actions;
 using Amazon.CDK.Pipelines;
+using System.Collections.Generic;
+
 
 namespace CdkWorkshop
 {
@@ -51,6 +53,27 @@ namespace CdkWorkshop
 
             var deploy = new WorkshopPipelineStage(this, "Deploy");
             var deployStage = pipeline.AddApplicationStage(deploy);
+
+            deployStage.AddActions(new ShellScriptAction(new ShellScriptActionProps
+            {
+                ActionName = "TestViewerEndpoint",
+                UseOutputs = new Dictionary<string, StackOutput> {
+                    { "ENDPOINT_URL", /* TBD */ }
+                },
+                Commands = new string[] {"curl -Ssf $ENDPOINT_URL"}
+            }));
+            deployStage.AddActions(new ShellScriptAction(new ShellScriptActionProps
+            {
+                ActionName = "TestAPIGatewayEndpoint",
+                UseOutputs = new Dictionary<string, StackOutput> {
+                    { "ENDPOINT_URL", /* TBD */ }
+                },
+                Commands = new string[] {
+                    "curl -Ssf $ENDPOINT_URL/",
+                    "curl -Ssf $ENDPOINT_URL/hello",
+                    "curl -Ssf $ENDPOINT_URL/test"
+                }
+            }));
         }
     }
 }
