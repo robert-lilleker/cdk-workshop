@@ -43,7 +43,7 @@ namespace CdkWorkshop
                     SourceArtifact = sourceArtifact,  // Where to get source code to build
                     CloudAssemblyArtifact = cloudAssemblyArtifact,  // Where to place built source
 
-                    InstallCommands = "npm install -g aws-cdk",
+                    InstallCommand = "npm install -g aws-cdk",
                     BuildCommand = "dotnet build src", // Language-specific build cmd
                     SynthCommand = "cdk synth"
                 })
