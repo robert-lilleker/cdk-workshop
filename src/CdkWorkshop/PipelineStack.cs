@@ -54,9 +54,9 @@ namespace CdkWorkshop
                 })
             });
             var deployDev = new WorkshopPipelineStage(this, "Deploy-dev", "442608252338");
-            var deployStage = pipeline.AddApplicationStage(deployDev);
+            pipeline.AddApplicationStage(deployDev).AddManualApprovalAction();
             var deployProd = new WorkshopPipelineStage(this, "Deploy-prod", "689529395349");
-            pipeline.AddApplicationStage(deployProd).AddManualApprovalAction();
+            pipeline.AddApplicationStage(deployProd);
         }
     }
 }
