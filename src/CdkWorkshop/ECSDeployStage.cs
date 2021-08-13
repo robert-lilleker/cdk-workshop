@@ -9,7 +9,7 @@ namespace CdkWorkshop
         public DeployEcsStage(Construct scope, string id, string account, StageProps props = null) : base(scope, id, props)
         {
             foreach (string region in Regions){
-                new CdkWorkshopStack(this, $"ECS-{region}", new StackProps {
+                new EcsStack(this, $"ECS-{region}", new StackProps {
                     Env = new Amazon.CDK.Environment {Region = region, Account = account}});
             }
         }

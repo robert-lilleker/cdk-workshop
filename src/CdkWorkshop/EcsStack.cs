@@ -7,6 +7,7 @@ namespace CdkWorkshop
 {
     public class EcsStack : Stack
     {
+        public string Fargate { get; set; }
         public EcsStack(Construct parent, string id, IStackProps props = null) : base(parent, id, props)
         {
             var vpc = new Vpc(this, "rl-test-vpc", new VpcProps
