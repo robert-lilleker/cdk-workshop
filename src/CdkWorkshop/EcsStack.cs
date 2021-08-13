@@ -45,11 +45,7 @@ namespace CdkWorkshop
             Service = FargateService.FromFargateServiceAttributes(
                 this, "service", fargateAttributes);
 
-            new Amazon.CDK.AWS.CodePipeline.Pipeline(this, "PlatformPipeline", new PipelineProps
-            {
-                PipelineName = "Ecr-deploy",
-                Stages = new[]
-                {
+
         }
     }
 }
