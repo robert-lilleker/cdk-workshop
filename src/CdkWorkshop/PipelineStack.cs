@@ -53,8 +53,10 @@ namespace CdkWorkshop
                     SynthCommand = "cdk synth"
                 })
             });
-            var deploy = new WorkshopPipelineStage(this, $"Deploy-dev");
-            var deployStage = pipeline.AddApplicationStage(deploy);
+            var deployDev = new WorkshopPipelineStage(this, "Deploy-dev", "442608252338");
+            var deployStage = pipeline.AddApplicationStage(deployDev);
+            var deployProd = new WorkshopPipelineStage(this, "Deploy-prod", "689529395349");
+            pipeline.AddApplicationStage(deployProd).AddManualApprovalAction();
         }
     }
 }

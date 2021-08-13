@@ -33,11 +33,12 @@ namespace CdkWorkshop
         //     }));
 
         //}
-        public WorkshopPipelineStage(Construct scope, string id, StageProps props = null)
+        public WorkshopPipelineStage(Construct scope, string id, string account, StageProps props = null)
             : base(scope, id, props)
         {
             foreach (string region in Regions){
-                new CdkWorkshopStack(this, $"WebService-{region}", new StackProps { Env = new Amazon.CDK.Environment {Region = region}});
+                new CdkWorkshopStack(this, $"WebService-{region}", new StackProps {
+                    Env = new Amazon.CDK.Environment {Region = region, Account = account}});
             }
         }
     }
