@@ -7,7 +7,7 @@ namespace CdkWorkshop
 {
     public class EcsStack : Stack
     {
-        public string Fargate { get; set; }
+        public IBaseService Service { get; set; }
         public EcsStack(Construct parent, string id, IStackProps props = null) : base(parent, id, props)
         {
             var vpc = new Vpc(this, "rl-test-vpc", new VpcProps
@@ -21,19 +21,25 @@ namespace CdkWorkshop
             });
 
             // Create a load-balanced Fargate service and make it public
-            new ApplicationLoadBalancedFargateService(this, "MyFargateService",
+            ApplicationLoadBalancedFargateService service = new ApplicationLoadBalancedFargateService(this, "MyFargateService",
                 new ApplicationLoadBalancedFargateServiceProps
                 {
                     Cluster = cluster,          // Required
-                    DesiredCount = 1,           // Default is 1
+                    DesiredCount = 6,           // Default is 1
                     TaskImageOptions = new ApplicationLoadBalancedTaskImageOptions
                     {
                         Image = ContainerImage.FromRegistry("amazon/amazon-ecs-sample")
                     },
-                    MemoryLimitMiB = 256,      // Default is 256
+                    MemoryLimitMiB = 2048,      // Default is 256
                     PublicLoadBalancer = true    // Default is false
                 }
             );
+            FargateServiceAttributes fargateAttributes = new FargateServiceAttributes();
+            fargateAttributes.Cluster = cluster;
+            fargateAttributes.ServiceName = service.Service.ServiceName;
+
+            Service = FargateService.FromFargateServiceAttributes(
+                this, "service", fargateAttributes);
         }
     }
 }

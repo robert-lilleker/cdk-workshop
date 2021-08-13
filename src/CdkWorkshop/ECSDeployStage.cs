@@ -1,5 +1,5 @@
 using Amazon.CDK;
-using Amazon.CDK.Pipelines;
+using Amazon.CDK.AWS.CodePipeline.Actions;
 
 namespace CdkWorkshop
 {
@@ -9,8 +9,13 @@ namespace CdkWorkshop
         public DeployEcsStage(Construct scope, string id, string account, StageProps props = null) : base(scope, id, props)
         {
             foreach (string region in Regions){
-                new EcsStack(this, $"ECS-{region}", new StackProps {
+                EcsStack ecsStack = new EcsStack(this, $"ECS-{region}", new StackProps {
                     Env = new Amazon.CDK.Environment {Region = region, Account = account}});
+
+                // new EcsDeployAction(new EcsDeployActionProps{
+                //     ActionName = $"ECS-deploy-{region}",
+                //     Service = ecsStack.Service
+                // });
             }
         }
     }
