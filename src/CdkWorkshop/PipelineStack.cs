@@ -3,6 +3,7 @@ using Amazon.CDK.AWS.CodeCommit;
 using Amazon.CDK.AWS.CodePipeline;
 using Amazon.CDK.AWS.CodePipeline.Actions;
 using Amazon.CDK.AWS.ECR;
+using Amazon.CDK.AWS.ECS;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.Pipelines;
 using System.Collections.Generic;
@@ -62,8 +63,9 @@ namespace CdkWorkshop
             // var deployProd = new WorkshopPipelineStage(this, "Deploy-prod", "689529395349");
             // pipeline.AddApplicationStage(deployProd);
 
-            var EcsDev = new DeployEcsStage(this, "Ecs-dev", "442608252338", "arn:aws:ecr:eu-west-2:442608252338:repository/rl-engine-repo");
-            pipeline.AddApplicationStage(EcsDev);
+            var ecsDev = new DeployEcsStage(this, "Ecs-dev", "442608252338", "arn:aws:ecr:eu-west-2:442608252338:repository/rl-engine-repo");
+            var ecsDevStage = pipeline.AddApplicationStage(ecsDev);
+            List<IBaseService> Services = ecsDev.Services;
             // var EcsProd = new DeployEcsStage(this, "Ecs-prod", "689529395349", ecrRepo);
             // pipeline.AddApplicationStage(EcsProd);
         }

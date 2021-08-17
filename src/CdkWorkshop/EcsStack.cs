@@ -36,7 +36,7 @@ namespace CdkWorkshop
                     {
                         Image = ContainerImage.FromEcrRepository(Repository.FromRepositoryAttributes(this, "ecrRepo", repositoryAttributes), "latest")
                     },
-                    MemoryLimitMiB = 256,      // Default is 256
+                    MemoryLimitMiB = 512,      // Default is 256
                     PublicLoadBalancer = true    // Default is false
                 }
             );
