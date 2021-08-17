@@ -65,7 +65,7 @@ namespace CdkWorkshop
 
             var ecsDev = new DeployEcsStage(this, "Ecs-dev", "442608252338", "arn:aws:ecr:eu-west-2:442608252338:repository/rl-engine-repo");
             var ecsDevStage = pipeline.AddApplicationStage(ecsDev);
-            List<IBaseService> Services = ecsDev.Services;
+            //List<IBaseService> Services = ecsDev.Services;
             // var EcsProd = new DeployEcsStage(this, "Ecs-prod", "689529395349", ecrRepo);
             // pipeline.AddApplicationStage(EcsProd);
         }

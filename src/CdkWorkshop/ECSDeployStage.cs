@@ -18,7 +18,7 @@ namespace CdkWorkshop
             foreach (string region in Regions){
                 EcsStack ecsStack = new EcsStack(this, $"ECS-{region}", ecrRepo, new StackProps {
                     Env = new Amazon.CDK.Environment {Region = region, Account = account}});
-                Services.Add(ecsStack.Service);
+                //Services.Add(ecsStack.Service);
             }
         }
     }
