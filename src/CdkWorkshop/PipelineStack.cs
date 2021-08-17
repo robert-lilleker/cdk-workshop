@@ -17,18 +17,12 @@ namespace CdkWorkshop
 
         public WorkshopPipelineStack(Construct parent, string id, IStackProps props = null) : base(parent, id, props)
         {
-            // Creates a CodeCommit repository called 'WorkshopRepo'
-            var repo = new Amazon.CDK.AWS.CodeCommit.Repository(this, "WorkshopRepo", new Amazon.CDK.AWS.CodeCommit.RepositoryProps
-            {
-                RepositoryName = "WorkshopRepo"
-            });
-
             //ecr repo
             Amazon.CDK.AWS.ECR.IRepository ecrRepo = new Amazon.CDK.AWS.ECR.Repository(this, "Engine-Repo", new Amazon.CDK.AWS.ECR.RepositoryProps {
                 ImageScanOnPush = true,
                 RepositoryName = "rl-engine-repo"
             });
-            repo.GrantPull(new AccountPrincipal("689529395349"));
+            ecrRepo.GrantPull(new AccountPrincipal("689529395349"));
 
             // Defines the artifact representing the sourcecode
             var sourceArtifact = new Artifact_();
@@ -45,7 +39,7 @@ namespace CdkWorkshop
 
                 SourceAction = new CodeStarConnectionsSourceAction ( new CodeStarConnectionsSourceActionProps {
                 ActionName = "Source",
-                ConnectionArn = "gitHubConnectionArn",
+                ConnectionArn = "arn:aws:codestar-connections:eu-west-2:093652424831:connection/809671ca-a7ca-4ac6-ae5d-e823830175be",
                 Output = sourceArtifact,
                 Owner = "robert-lilleker",
                 Repo = "cdk-workshop",
@@ -67,8 +61,8 @@ namespace CdkWorkshop
             // var deployProd = new WorkshopPipelineStage(this, "Deploy-prod", "689529395349");
             // pipeline.AddApplicationStage(deployProd);
 
-            // var EcsDev = new DeployEcsStage(this, "Ecs-dev", "442608252338", ecrRepo);
-            // pipeline.AddApplicationStage(EcsDev);
+            var EcsDev = new DeployEcsStage(this, "Ecs-dev", "442608252338", ecrRepo);
+            pipeline.AddApplicationStage(EcsDev);
             // var EcsProd = new DeployEcsStage(this, "Ecs-prod", "689529395349", ecrRepo);
             // pipeline.AddApplicationStage(EcsProd);
         }

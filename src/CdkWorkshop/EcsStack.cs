@@ -32,7 +32,7 @@ namespace CdkWorkshop
                     DesiredCount = 1,           // Default is 1
                     TaskImageOptions = new ApplicationLoadBalancedTaskImageOptions
                     {
-                        Image = ContainerImage.FromRegistry("amazon/amazon-ecs-sample")
+                        Image = ContainerImage.FromEcrRepository(ecrRepo, "latest")
                     },
                     MemoryLimitMiB = 256,      // Default is 256
                     PublicLoadBalancer = true    // Default is false
