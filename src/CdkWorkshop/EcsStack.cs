@@ -11,6 +11,7 @@ namespace CdkWorkshop
 {
     public class EcsStack : Stack
     {
+        public IBaseService serviceIdentifier;
         public EcsStack(Construct parent, string id, string ecrRepo, IStackProps props = null) : base(parent, id, props)
         {
             var vpc = new Vpc(this, "rl-test-vpc", new VpcProps
@@ -43,8 +44,9 @@ namespace CdkWorkshop
             FargateServiceAttributes fargateAttributes = new FargateServiceAttributes();
             fargateAttributes.Cluster = cluster;
             fargateAttributes.ServiceName = service.Service.ServiceName;
-            IBaseService serviceIdentifier = FargateService.FromFargateServiceAttributes(
+            serviceIdentifier = FargateService.FromFargateServiceAttributes(
                 this, "service", fargateAttributes);
+
             var helloWithCounter = new EcsPipeline(this, "EcsPipeline", new EcsPipelineProps
             {
                 Repo = repo,

@@ -71,13 +71,13 @@ namespace CdkWorkshop
                 ActionName = "SourceFromECR",
                 Output = new Artifact_("EcrArtifact"),
                 Repository = props.Repo,
-                ImageTag = "latest",
+                ImageTag = "latest"
             });
 
             PipelineProject build = GetStandardImageBuild(this, props.ContainerName);
             Artifact_ buildOutput = new Artifact_("BuildOutput");
 
-            new Amazon.CDK.AWS.CodePipeline.Pipeline(this, "PlatformPipeline", new PipelineProps
+            new Pipeline(this, "PlatformPipeline", new PipelineProps
             {
                 PipelineName = "Ecr-deploy",
                 Stages = new[]
@@ -85,7 +85,7 @@ namespace CdkWorkshop
                     new Amazon.CDK.AWS.CodePipeline.StageProps
                     {
                         StageName = "Source",
-                        Actions = new IAction[] {source}
+                        Actions = new IAction[] {source},
                     },
                     new Amazon.CDK.AWS.CodePipeline.StageProps
                     {
@@ -108,7 +108,7 @@ namespace CdkWorkshop
                         {
                             new EcsDeployAction(new EcsDeployActionProps
                             {
-                                ActionName = "Deploy-to-otel",
+                                ActionName = "Deploy",
                                 Service = props.ServiceIdentifier,
                                 Input = buildOutput
                             }),
