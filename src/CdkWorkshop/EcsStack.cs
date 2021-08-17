@@ -11,7 +11,6 @@ namespace CdkWorkshop
 {
     public class EcsStack : Stack
     {
-        public IBaseService Service { get; set; }
         public EcsStack(Construct parent, string id, string ecrRepo, IStackProps props = null) : base(parent, id, props)
         {
             var vpc = new Vpc(this, "rl-test-vpc", new VpcProps
@@ -26,6 +25,7 @@ namespace CdkWorkshop
             RepositoryAttributes repositoryAttributes = new RepositoryAttributes();
             repositoryAttributes.RepositoryArn = ecrRepo;
             repositoryAttributes.RepositoryName = "rl-engine-repo";
+            IRepository repo = Repository.FromRepositoryAttributes(this, "ecrRepo", repositoryAttributes);
             // Create a load-balanced Fargate service and make it public
             ApplicationLoadBalancedFargateService service = new ApplicationLoadBalancedFargateService(this, "MyFargateService",
                 new ApplicationLoadBalancedFargateServiceProps
@@ -34,7 +34,7 @@ namespace CdkWorkshop
                     DesiredCount = 1,           // Default is 1
                     TaskImageOptions = new ApplicationLoadBalancedTaskImageOptions
                     {
-                        Image = ContainerImage.FromEcrRepository(Repository.FromRepositoryAttributes(this, "ecrRepo", repositoryAttributes), "latest")
+                        Image = ContainerImage.FromEcrRepository(repo, "latest")
                     },
                     MemoryLimitMiB = 512,      // Default is 256
                     PublicLoadBalancer = true    // Default is false
@@ -43,9 +43,17 @@ namespace CdkWorkshop
             FargateServiceAttributes fargateAttributes = new FargateServiceAttributes();
             fargateAttributes.Cluster = cluster;
             fargateAttributes.ServiceName = service.Service.ServiceName;
-
-            Service = FargateService.FromFargateServiceAttributes(
+            IBaseService serviceIdentifier = FargateService.FromFargateServiceAttributes(
                 this, "service", fargateAttributes);
+            var helloWithCounter = new EcsPipeline(this, "EcsPipeline", new EcsPipelineProps
+            {
+                Repo = repo,
+                ServiceIdentifier = serviceIdentifier,
+                ContainerName = service.TaskDefinition.DefaultContainer.ContainerName
+            });
+
+
+
 
 
         }
