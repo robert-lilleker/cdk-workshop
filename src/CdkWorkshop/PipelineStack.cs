@@ -26,7 +26,7 @@ namespace CdkWorkshop
             //ecr repo
             Amazon.CDK.AWS.ECR.IRepository ecrRepo = new Amazon.CDK.AWS.ECR.Repository(this, "Engine-Repo", new Amazon.CDK.AWS.ECR.RepositoryProps {
                 ImageScanOnPush = true,
-                RepositoryName = "rl-engine-repo-2"
+                RepositoryName = "rl-engine-repo"
             });
             repo.GrantPull(new AccountPrincipal("689529395349"));
 
@@ -40,17 +40,17 @@ namespace CdkWorkshop
             // of our pipeline
             var pipeline = new CdkPipeline(this, "Pipeline", new CdkPipelineProps
             {
-                PipelineName = "WorkshopPipeline",
+                PipelineName = "GitWorkshopPipeline",
                 CloudAssemblyArtifact = cloudAssemblyArtifact,
 
-                // Generates the source artifact from the repo we created in the last step
-                SourceAction = new CodeCommitSourceAction(new CodeCommitSourceActionProps
-                {
-                    ActionName = "CodeCommit", // Any Git-based source control
-                    Output = sourceArtifact, // Indicates where the artifact is stored
-                    Repository = repo // Designates the repo to draw code from
+                SourceAction = new CodeStarConnectionsSourceAction ( new CodeStarConnectionsSourceActionProps {
+                ActionName = "Source",
+                ConnectionArn = "gitHubConnectionArn",
+                Output = sourceArtifact,
+                Owner = "robert-lilleker",
+                Repo = "cdk-workshop",
+                Branch = "main"
                 }),
-
                 // Builds our source code outlined above into a could assembly artifact
                 SynthAction = SimpleSynthAction.StandardNpmSynth(new StandardNpmSynthOptions
                 {

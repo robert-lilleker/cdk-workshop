@@ -17,7 +17,7 @@ namespace CdkWorkshop
             }
             var app = new App();
             Environment env = makeEnv(account: "442608252338", region: "eu-west-2");
-            new WorkshopPipelineStack(app, "WorkshopPipelineStack", new StackProps { Env=env});
+            new WorkshopPipelineStack(app, "GitWorkshopPipelineStack", new StackProps { Env=env});
 
             app.Synth();
         }
