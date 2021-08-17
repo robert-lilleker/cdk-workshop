@@ -12,7 +12,7 @@ namespace CdkWorkshop
     public class EcsStack : Stack
     {
         public IBaseService Service { get; set; }
-        public EcsStack(Construct parent, string id, IRepository ecrRepo, IStackProps props = null) : base(parent, id, props)
+        public EcsStack(Construct parent, string id, string ecrRepo, IStackProps props = null) : base(parent, id, props)
         {
             var vpc = new Vpc(this, "rl-test-vpc", new VpcProps
             {
@@ -23,7 +23,9 @@ namespace CdkWorkshop
             {
                 Vpc = vpc
             });
-
+            RepositoryAttributes repositoryAttributes = new RepositoryAttributes();
+            repositoryAttributes.RepositoryArn = ecrRepo;
+            repositoryAttributes.RepositoryName = "rl-engine-repo";
             // Create a load-balanced Fargate service and make it public
             ApplicationLoadBalancedFargateService service = new ApplicationLoadBalancedFargateService(this, "MyFargateService",
                 new ApplicationLoadBalancedFargateServiceProps
@@ -32,7 +34,7 @@ namespace CdkWorkshop
                     DesiredCount = 1,           // Default is 1
                     TaskImageOptions = new ApplicationLoadBalancedTaskImageOptions
                     {
-                        Image = ContainerImage.FromEcrRepository(ecrRepo, "latest")
+                        Image = ContainerImage.FromEcrRepository(Repository.FromRepositoryAttributes(this, "ecrRepo", repositoryAttributes), "latest")
                     },
                     MemoryLimitMiB = 256,      // Default is 256
                     PublicLoadBalancer = true    // Default is false
