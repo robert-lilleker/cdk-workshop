@@ -29,12 +29,12 @@ namespace CdkWorkshop
                 new ApplicationLoadBalancedFargateServiceProps
                 {
                     Cluster = cluster,          // Required
-                    DesiredCount = 6,           // Default is 1
+                    DesiredCount = 1,           // Default is 1
                     TaskImageOptions = new ApplicationLoadBalancedTaskImageOptions
                     {
                         Image = ContainerImage.FromRegistry("amazon/amazon-ecs-sample")
                     },
-                    MemoryLimitMiB = 2048,      // Default is 256
+                    MemoryLimitMiB = 256,      // Default is 256
                     PublicLoadBalancer = true    // Default is false
                 }
             );
