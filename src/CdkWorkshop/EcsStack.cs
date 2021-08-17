@@ -12,7 +12,7 @@ namespace CdkWorkshop
     public class EcsStack : Stack
     {
         public IBaseService serviceIdentifier;
-        public EcsStack(Construct parent, string id, string ecrRepo, IStackProps props = null) : base(parent, id, props)
+        public EcsStack(Construct parent, string id, IRepository ecrRepo, IStackProps props = null) : base(parent, id, props)
         {
             var vpc = new Vpc(this, "rl-test-vpc", new VpcProps
             {
@@ -23,10 +23,7 @@ namespace CdkWorkshop
             {
                 Vpc = vpc
             });
-            RepositoryAttributes repositoryAttributes = new RepositoryAttributes();
-            repositoryAttributes.RepositoryArn = ecrRepo;
-            repositoryAttributes.RepositoryName = "rl-engine-repo";
-            IRepository repo = Repository.FromRepositoryAttributes(this, "ecrRepo", repositoryAttributes);
+
             // Create a load-balanced Fargate service and make it public
             ApplicationLoadBalancedFargateService service = new ApplicationLoadBalancedFargateService(this, "MyFargateService",
                 new ApplicationLoadBalancedFargateServiceProps
@@ -35,7 +32,7 @@ namespace CdkWorkshop
                     DesiredCount = 1,           // Default is 1
                     TaskImageOptions = new ApplicationLoadBalancedTaskImageOptions
                     {
-                        Image = ContainerImage.FromEcrRepository(repo, "latest")
+                        Image = ContainerImage.FromEcrRepository(ecrRepo, "latest")
                     },
                     MemoryLimitMiB = 512,      // Default is 256
                     PublicLoadBalancer = true    // Default is false
@@ -49,7 +46,7 @@ namespace CdkWorkshop
 
             var helloWithCounter = new EcsPipeline(this, "EcsPipeline", new EcsPipelineProps
             {
-                Repo = repo,
+                Repo = ecrRepo,
                 ServiceIdentifier = serviceIdentifier,
                 ContainerName = service.TaskDefinition.DefaultContainer.ContainerName
             });

@@ -15,8 +15,14 @@ namespace CdkWorkshop
 
         public DeployEcsStage(Construct scope, string id, string account, string ecrRepo, StageProps props = null) : base(scope, id, props)
         {
+            RepositoryAttributes repositoryAttributes = new RepositoryAttributes();
+            repositoryAttributes.RepositoryArn = ecrRepo;
+            repositoryAttributes.RepositoryName = "rl-engine-repo";
+            IRepository repo = Repository.FromRepositoryAttributes(this, "ecrRepo", repositoryAttributes);
+
+
             foreach (string region in Regions){
-                EcsStack ecsStack = new EcsStack(this, $"ECS-{region}", ecrRepo, new StackProps {
+                EcsStack ecsStack = new EcsStack(this, $"ECS-{region}", repo, new StackProps {
                     Env = new Amazon.CDK.Environment {Region = region, Account = account}});
             }
         }
